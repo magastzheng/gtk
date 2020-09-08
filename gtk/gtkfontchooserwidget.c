@@ -102,6 +102,7 @@ struct _GtkFontChooserWidget
   GtkWidget    *list_stack;
   GtkSingleSelection *selection;
   GtkCustomFilter      *custom_filter;
+  GtkCustomFilter      *monospace_filter;
   GtkFilterListModel   *filter_model;
 
   GtkWidget       *preview;
@@ -321,6 +322,38 @@ output_cb (GtkSpinButton *spin,
   g_free (text);
 
   return TRUE;
+}
+
+static gboolean
+monospace_filter_cb (gpointer item,
+                     gpointer data)
+{
+  PangoFontFamily *family;
+
+  if (PANGO_IS_FONT_FAMILY (item))
+    family = item;
+  else
+    family = pango_font_face_get_family (PANGO_FONT_FACE (item));
+
+  return pango_font_family_is_monospace (family);
+}
+
+static void
+monospace_check_changed (GtkCheckButton       *check,
+                         GParamSpec           *pspec,
+                         GtkFontChooserWidget *self)
+{
+  if (gtk_check_button_get_active (check))
+    {
+      gtk_custom_filter_set_filter_func (self->monospace_filter,
+                                         monospace_filter_cb,
+                                         NULL,
+                                         NULL);
+    }
+  else
+    {
+      gtk_custom_filter_set_filter_func (self->monospace_filter, NULL, NULL, NULL);
+    }
 }
 
 static void
@@ -796,6 +829,7 @@ gtk_font_chooser_widget_class_init (GtkFontChooserWidgetClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GtkFontChooserWidget, filter_model);
   gtk_widget_class_bind_template_child (widget_class, GtkFontChooserWidget, selection);
   gtk_widget_class_bind_template_child (widget_class, GtkFontChooserWidget, custom_filter);
+  gtk_widget_class_bind_template_child (widget_class, GtkFontChooserWidget, monospace_filter);
   gtk_widget_class_bind_template_child (widget_class, GtkFontChooserWidget, preview);
   gtk_widget_class_bind_template_child (widget_class, GtkFontChooserWidget, preview2);
   gtk_widget_class_bind_template_child (widget_class, GtkFontChooserWidget, size_label);
@@ -817,6 +851,7 @@ gtk_font_chooser_widget_class_init (GtkFontChooserWidgetClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, output_cb);
   gtk_widget_class_bind_template_callback (widget_class, selection_changed_cb);
   gtk_widget_class_bind_template_callback (widget_class, resize_by_scroll_cb);
+  gtk_widget_class_bind_template_callback (widget_class, monospace_check_changed);
 
   gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
   gtk_widget_class_set_css_name (widget_class, I_("fontchooser"));
