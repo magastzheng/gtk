@@ -359,10 +359,10 @@ fribidi_dep    = dependency('fribidi', version: fribidi_req,
 require_pangoft2 = wayland_enabled or x11_enabled
 
 if require_pangoft2
-  pangoft_dep    = dependency('pangoft2', version: pango_req,
+  pangoft_dep    = dependency('pangofc', version: pango_req,
                               fallback : ['pango', 'libpangoft2_dep'])
 else
-  pangoft_dep    = dependency('pangoft2', required: false)
+  pangoft_dep    = dependency('pangofc', required: false)
 endif
 
 if win32_enabled
