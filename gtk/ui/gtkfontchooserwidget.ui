@@ -5,6 +5,7 @@
     <signal name="items-changed" handler="rows_changed_cb" object="GtkFontChooserWidget" swapped="1" />
     <property name="model">
       <object class="GtkFilterListModel" id="filter_model">
+        <property name="incremental">1</property>
         <property name="filter">
           <object class="GtkEveryFilter">
             <child>
@@ -18,12 +19,10 @@
               </object>
             </child>
             <child>
-              <object class="GtkCustomFilter" id="custom_filter">
-              </object>
+              <object class="GtkCustomFilter" id="custom_filter"/>
             </child>
             <child>
-              <object class="GtkCustomFilter" id="monospace_filter">
-              </object>
+              <object class="GtkCustomFilter" id="user_filter"/>
             </child>
           </object>
         </property>
@@ -73,6 +72,7 @@
                             <child>
                               <object class="GtkBox">
                                 <property name="orientation">vertical</property>
+                                <property name="spacing">6</property>
                                 <child>
                                   <object class="GtkLabel">
                                     <property name="label" translatable="yes">Filter by</property>
@@ -89,11 +89,23 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkScrolledWindow">
-                                    <property name="hscrollbar-policy">never</property>
-                                    <property name="vscrollbar-policy">automatic</property>
+                                  <object class="GtkCheckButton" id="language_button">
+                                    <property name="label" translatable="yes">Language</property>
+                                    <signal name="notify::active" handler="language_check_changed"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkFrame">
+                                    <property name="margin-start">12</property>
                                     <child>
-                                      <object class="GtkListView">
+                                      <object class="GtkScrolledWindow">
+                                        <property name="min-content-height">200</property>
+                                        <property name="hscrollbar-policy">never</property>
+                                        <property name="vscrollbar-policy">automatic</property>
+                                        <child>
+                                          <object class="GtkListView" id="language_list">
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
